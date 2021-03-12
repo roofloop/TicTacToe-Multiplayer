@@ -32,4 +32,38 @@ Strongly influenced material choices with google material design as source. Butt
 
 
 
+### Top Application Bar - Google Material Design
+
+    topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+
+                R.id.more -> {
+                    // Handle more item (inside overflow menu) press
+
+                    Log.e("TAG", "more")
+
+                    FirebaseAuth.getInstance().signOut()
+
+                    val user = FirebaseAuth.getInstance().currentUser
+                    if (user != null) {
+                        // User is still signed in
+                        Log.e("TAG", "Sign out error")
+
+                    } else {
+                        // No user is signed in
+                        val intent = Intent(this, LogInActivity::class.java).apply {
+                        }
+                        startActivity(intent)
+                        finish()
+                    }
+
+
+
+                    true
+                }
+                else -> false
+            }
+        }
+
+
 
