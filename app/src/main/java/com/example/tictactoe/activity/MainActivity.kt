@@ -1,9 +1,11 @@
-package com.example.tictactoe
+package com.example.tictactoe.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import com.example.tictactoe.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
@@ -45,9 +47,17 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.selectedItemId = R.id.home
         bottomNavigation.setOnNavigationItemSelectedListener(nav)
 
+        val playSoloButton = findViewById<Button>(R.id.play_solo_button)
+        val playOnlineButton = findViewById<Button>(R.id.play_online_button)
+        val JoinGameButton = findViewById<Button>(R.id.join_game_button)
+
+        val user = FirebaseAuth.getInstance().currentUser
 
 
-       val topAppBar =  findViewById<androidx.appcompat.widget.Toolbar>(R.id.topAppBar)
+
+
+
+        val topAppBar =  findViewById<androidx.appcompat.widget.Toolbar>(R.id.topAppBar)
 
         topAppBar.setNavigationOnClickListener {
             // Handle navigation icon press
@@ -61,21 +71,16 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.more -> {
                     // Handle more item (inside overflow menu) press
-
-                    Log.e("TAG", "more")
-
                     FirebaseAuth.getInstance().signOut()
 
-                    val user = FirebaseAuth.getInstance().currentUser
                     if (user != null) {
                         // User is still signed in
-                        Log.e("TAG", "Sign out error")
+                        Log.e("TAG", "Sign out error" + user.isAnonymous)
+                        Log.e("TAG", "Sign out error$user.")
 
                     } else {
                         // No user is signed in
-                        val intent = Intent(this, LogInActivity::class.java).apply {
-                        }
-                        startActivity(intent)
+                        startActivity(Intent(this, LogInActivity::class.java))
                         finish()
                     }
 
@@ -87,6 +92,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        playSoloButton.setOnClickListener {
+
+            startActivity(Intent(this, PlaySoloActivity::class.java))
+
+        }
+
+        playOnlineButton.setOnClickListener {
+
+            startActivity(Intent(this, PlayOnlineActivity::class.java))
+
+        }
+
+        JoinGameButton.setOnClickListener {
+            startActivity(Intent(this, JoinGameActivity::class.java))
+
+        }
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
     }
 }
 

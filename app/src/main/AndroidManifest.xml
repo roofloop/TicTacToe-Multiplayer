@@ -9,10 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TicTacToe.TransparentTheme">
-        <activity android:name=".MainActivity2"></activity>
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LogInActivity">
+        <activity android:name=".activity.OnlineGameActivity"></activity>
+        <activity android:name=".activity.JoinGameActivity" />
+        <activity android:name=".activity.PlayVsFriendActivity" />
+        <activity android:name=".activity.PlayOnlineActivity" />
+        <activity android:name=".activity.PlaySoloActivity" />
+        <activity android:name=".MainActivity2" />
+        <activity android:name=".activity.SignupActivity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
