@@ -210,11 +210,7 @@ class PlaySoloActivity : AppCompatActivity() {
             }
             if(isBoardFull(board)){
                 startActivity(Intent(this, MainActivity::class.java))
-
             }
-
-
-
     }
 
 
@@ -242,7 +238,6 @@ class PlaySoloActivity : AppCompatActivity() {
             else if(position == 7) binding.button7.text = "O"
             else if(position == 8) binding.button8.text = "O"
         }, 500)
-
     }
 
 

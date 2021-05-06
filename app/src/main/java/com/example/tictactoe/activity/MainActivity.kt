@@ -53,16 +53,11 @@ class MainActivity : AppCompatActivity() {
 
         val user = FirebaseAuth.getInstance().currentUser
 
-
-
-
-
         val topAppBar =  findViewById<androidx.appcompat.widget.Toolbar>(R.id.topAppBar)
 
         topAppBar.setNavigationOnClickListener {
             // Handle navigation icon press
             Log.e("TAG", "Drawer")
-
 
         }
 
@@ -113,7 +108,6 @@ class MainActivity : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
     }
 }
 

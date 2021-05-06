@@ -12,12 +12,11 @@ class FirestoreModel : FirestoreInterface {
 
     private val db = Firebase.firestore
 
-    override fun addToFirestore(firestore: Firestore, id: String) {
+    override fun addMatchmakingInfoToFirestore(firestore: Firestore, id: String) {
         try {
             val newGameInFirestore = db.collection("Games").document(id)
             firestore.player1 = newGameInFirestore.id
 
-            // Add a new document with a generated ID
             newGameInFirestore
                     .set(firestore)
                     .addOnSuccessListener {
@@ -26,10 +25,11 @@ class FirestoreModel : FirestoreInterface {
 
                     }
                     .addOnFailureListener { e ->
+
                         Log.w("TAG", "Error adding document", e)
                     }
 
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.w("TAG", "Error adding to firestore", e)
         }
     }
@@ -40,29 +40,29 @@ class FirestoreModel : FirestoreInterface {
 
         try {
             db.collection("Games")
-                .get()
-                .addOnSuccessListener { snapshot ->
-                    diaryInputsList.clear()
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        diaryInputsList.clear()
 
-                    if (snapshot != null && !snapshot.isEmpty) {
-                        for (doc in snapshot.documents) {
-                            val diaryInputs = doc.toObject(Firestore::class.java)
+                        if (snapshot != null && !snapshot.isEmpty) {
+                            for (doc in snapshot.documents) {
+                                val diaryInputs = doc.toObject(Firestore::class.java)
 
-                            // Adding data from firestore to out mutableList
-                            diaryInputsList.add(diaryInputs!!)
+                                // Adding data from firestore to out mutableList
+                                diaryInputsList.add(diaryInputs!!)
+                            }
+                            // Returning the up to date mutableList
+                            callback(diaryInputsList)
+
+                        } else {
+                            //Refreshing the RV and deleting the cache if firestore is empty.
+                            callback(diaryInputsList)
                         }
-                        // Returning the up to date mutableList
-                        callback(diaryInputsList)
-
-                    } else {
-                        //Refreshing the RV and deleting the cache if firestore is empty.
-                        callback(diaryInputsList)
                     }
-                }
-                .addOnFailureListener { e ->
-                    Log.d("TAG", "Error getting documents: ", e)
-                }
-        } catch (e: Exception){
+                    .addOnFailureListener { e ->
+                        Log.d("TAG", "Error getting documents: ", e)
+                    }
+        } catch (e: Exception) {
             Log.d("TAG", "Failure", e)
         }
     }
@@ -76,20 +76,31 @@ class FirestoreModel : FirestoreInterface {
                 }
     }
 
-    override fun updateBoardInFirestore(id: String, list: ArrayList<String>) {
+    override fun updateBoardInFirestore(id: String, list: ArrayList<String>, idToPlay: String) {
         val updateDiaryInputRef = db.collection("Games").document(id)
 
         updateDiaryInputRef
-            .update("board", list, "isMyTurn", opponentId)
-            .addOnSuccessListener {
+                .update("board", list, "turnToPlay", idToPlay)
+                .addOnSuccessListener {
 
-                Log.d("TAG", "Updated the board")
+                    Log.d("TAG", "Updated the board")
 
-            }
-            .addOnFailureListener { e ->
-                Log.w("TAG", "Error updating document", e)
+                }
+                .addOnFailureListener { e ->
+                    Log.w("TAG", "Error updating document", e)
+                }
+    }
 
+    override fun updateConnectedState(id: String) {
+        val updateDiaryInputRef = db.collection("Games").document(id)
 
-            }    }
+        updateDiaryInputRef
+                .update("searching", false)
+                .addOnSuccessListener {
 
+                }
+                .addOnFailureListener { e ->
+                    Log.w("TAG", "Error updating document", e)
+                }
+    }
 }

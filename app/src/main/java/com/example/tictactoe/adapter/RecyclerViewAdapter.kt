@@ -21,7 +21,7 @@ class RecyclerViewAdapter (private val firestoreList: MutableList<Firestore>) : 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.itemView.stag_date.text = firestoreList[position].creationDate
+        holder.itemView.date_item.text = firestoreList[position].creationDate
 
     }
 
