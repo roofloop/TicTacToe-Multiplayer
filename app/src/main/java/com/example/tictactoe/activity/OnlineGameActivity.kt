@@ -44,6 +44,7 @@ class OnlineGameActivity : BaseActivity() {
         topAppBar.setNavigationOnClickListener {
             // Handle navigation icon press
         }
+
         getGameInfo()
     }
 

@@ -1,6 +1,5 @@
 package com.example.tictactoe.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +18,7 @@ private lateinit var uid: String
 class PlayOnlineActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_play_online)
+        setContentView(R.layout.activity_create_game)
         firestoreHelper = FirestoreModel()
         auth = FirebaseAuth.getInstance()
         val user = FirebaseAuth.getInstance().currentUser
@@ -67,12 +66,22 @@ class PlayOnlineActivity : AppCompatActivity() {
 
             Log.w("TAG", "handleSearching opponentSearch = $opponentSearch")
 
+
             // If there is an opponent that has joined the game
             if (!opponentSearch) {
-                val intent = Intent(this, OnlineGameActivity::class.java)
+
+                val bundle = Bundle()
+                val gameFragment = OnlineGameFragment()
+                val transaktion = supportFragmentManager.beginTransaction()
+                transaktion.add(R.id.container, gameFragment, "gameFragment")
+                bundle.putString("creatorId", uid )
+
+                transaktion.commit()
+
+                /* val intent = Intent(this, OnlineGameActivity::class.java)
                 intent.putExtra("creatorId", uid)
                 startActivity(intent)
-                finish()
+                finish()*/
             } else {
                 Log.w("TAG", "handleSearching opponentSearch = $opponentSearch")
             }
