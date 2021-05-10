@@ -1,10 +1,7 @@
 package com.example.tictactoe.model
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import com.example.tictactoe.activity.OnlineGameActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    tools:context=".activity.LogInActivity">
+    tools:context="com.example.tictactoe.activity.LogInActivity">
 
 
     <TextView
@@ -67,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:onClick="loginButtonClick"
         android:text="@string/button_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -107,7 +108,6 @@
         android:layout_marginBottom="61dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="createAccount"
         android:text="@string/create_an_account"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"

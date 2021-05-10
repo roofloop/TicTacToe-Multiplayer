@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#3F95F3"
     tools:context=".activity.MainActivity">
 
 
@@ -25,6 +26,148 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gameButtonsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/gameButton1"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginEnd="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintRight_toLeftOf="@+id/gameButton2"
+            app:layout_constraintTop_toTopOf="@+id/gameButton2" />
+
+        <ImageView
+            android:id="@+id/gameButton2"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginBottom="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintBottom_toTopOf="@+id/gameButton5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <ImageView
+            android:id="@+id/gameButton3"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginStart="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintLeft_toRightOf="@+id/gameButton2"
+            app:layout_constraintTop_toTopOf="@+id/gameButton2" />
+
+        <ImageView
+            android:id="@+id/gameButton4"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginEnd="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintRight_toLeftOf="@+id/gameButton5"
+            app:layout_constraintTop_toTopOf="@+id/gameButton5" />
+
+        <ImageView
+            android:id="@+id/gameButton5"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginTop="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gameButton2" />
+
+        <ImageView
+            android:id="@+id/gameButton6"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginStart="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintLeft_toRightOf="@+id/gameButton5"
+            app:layout_constraintTop_toTopOf="@+id/gameButton5" />
+
+        <ImageView
+            android:id="@+id/gameButton7"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginEnd="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintRight_toLeftOf="@+id/gameButton8"
+            app:layout_constraintTop_toTopOf="@+id/gameButton8" />
+
+        <ImageView
+            android:id="@+id/gameButton8"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginTop="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gameButton5" />
+
+        <ImageView
+            android:id="@+id/gameButton9"
+            style="@style/AppTheme.GameButton"
+            android:layout_width="@dimen/game_button_size"
+            android:layout_height="@dimen/game_button_size"
+            android:layout_marginStart="@dimen/game_button_spacing"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintLeft_toRightOf="@+id/gameButton8"
+            app:layout_constraintTop_toTopOf="@+id/gameButton8" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/sendRequestEmail"
+        style="@style/AppTheme.InputText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/request_email_hint"
+        android:inputType="textEmailAddress"
+        app:layout_constraintLeft_toLeftOf="@+id/gameButtonsContainer"
+        app:layout_constraintRight_toRightOf="@+id/gameButtonsContainer"
+        app:layout_constraintTop_toBottomOf="@+id/gameButtonsContainer" />
+
+    <Button
+        android:id="@+id/sendRequestButton"
+        style="@style/AppTheme.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="247dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="76dp"
+        android:onClick="buttonClick"
+        android:text="@string/action_request"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendRequestEmail" />
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/resetGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_replay"
+        android:onClick="buttonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/join_game_button"
         android:layout_width="160dp"
@@ -42,6 +185,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Create game"
+        android:onClick="buttonClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/join_game_button" />
@@ -67,6 +211,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu">
+
+
 
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

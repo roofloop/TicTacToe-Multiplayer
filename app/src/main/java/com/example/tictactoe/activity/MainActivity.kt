@@ -1,114 +1,207 @@
 package com.example.tictactoe.activity
 
+import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
+import android.view.View
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.example.tictactoe.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
+import com.example.tictactoe.manager.NavigationManager
+import com.example.tictactoe.presenter.main.MainPresenter
+import com.example.tictactoe.presenter.main.MainPresenterInterface
+import com.example.tictactoe.presenter.main.MainView
+import com.example.tictactoe.utils.Constants
+import com.example.tictactoe.utils.closeSoftKeyboard
+import kotlinx.android.synthetic.main.activity_main.*
 
 
+class MainActivity : AppCompatActivity(), MainView {
 
-val nav = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-
-    when(item.itemId) {
-
-        R.id.home -> {
-            // Respond to navigation item 1 click
-            Log.e("TAG", "Home")
-            true
-        }
-        R.id.highscore -> {
-            // Respond to navigation item 2 click
-            true
-        }
-        R.id.history -> {
-            // Respond to navigation item 2 click
-            true
-        }
-        else -> false
+    companion object {
+        private const val TAG: String = "MainActivity"
     }
-}
 
-private lateinit var auth: FirebaseAuth
+    private val presenter: MainPresenterInterface by lazy { MainPresenter(this) }
+    private val count: Int by lazy { gameButtonsContainer.childCount }
 
-
-class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        manageExtrasAndStartListening()
+    }
 
-        // Initialize Firebase Auth
-        auth = FirebaseAuth.getInstance()
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter()
+        filter.addAction(Constants.BROADCAST_ACTION_LISTENER)
+        registerReceiver(notificationReceiver, filter)
+    }
 
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.navigation_view)
-        bottomNavigation.selectedItemId = R.id.home
-        bottomNavigation.setOnNavigationItemSelectedListener(nav)
+    override fun onResume() {
+        super.onResume()
+        setGameVisibility(presenter.isPlaying())
+        presenter.onResume()
+    }
 
-        val playSoloButton = findViewById<Button>(R.id.play_solo_button)
-        val playOnlineButton = findViewById<Button>(R.id.play_online_button)
-        val JoinGameButton = findViewById<Button>(R.id.join_game_button)
+    override fun onStop() {
+        super.onStop()
+        presenter.onStop()
+        unregisterReceiver(notificationReceiver)
+    }
 
-        val user = FirebaseAuth.getInstance().currentUser
+    override fun getActivity(): Activity {
+        return this
+    }
 
-        val topAppBar =  findViewById<androidx.appcompat.widget.Toolbar>(R.id.topAppBar)
+    override fun onAcceptedRequest(opponentEmail: String) {
+        //opponentInfo.text = opponentEmail
+        setGameVisibility(true)
+    }
 
-        topAppBar.setNavigationOnClickListener {
-            // Handle navigation icon press
-            Log.e("TAG", "Drawer")
+    override fun onGameListening(opponentEmail: String) {
+        //opponentInfo.text = opponentEmail
+    }
 
-        }
+    override fun onGameFinished() {
+        resetGameButton.visibility = View.VISIBLE
+        enableGameButtons(false)
+        setTurnVisually(0)
 
-        topAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
+    }
 
-                R.id.more -> {
-                    // Handle more item (inside overflow menu) press
-                    FirebaseAuth.getInstance().signOut()
+    override fun setTurnVisually(player: Int) {
+        //playerInfo.isSelected = player == Constants.FIRST_PLAYER
+        //opponentInfo.isSelected = player == Constants.SECOND_PLAYER
+    }
 
-                    if (user != null) {
-                        // User is still signed in
-                        Log.e("TAG", "Sign out error" + user.isAnonymous)
-                        Log.e("TAG", "Sign out error$user.")
-
-                    } else {
-                        // No user is signed in
-                        startActivity(Intent(this, LogInActivity::class.java))
-                        finish()
-                    }
-
-
-
-                    true
-                }
-                else -> false
+    override fun getGameButton(id: Int): ImageView {
+        when (id) {
+            1 -> return gameButton1
+            2 -> return gameButton2
+            3 -> return gameButton3
+            4 -> return gameButton4
+            5 -> return gameButton5
+            6 -> return gameButton6
+            7 -> return gameButton7
+            8 -> return gameButton8
+            9 -> return gameButton9
+            else -> {
+                return gameButton1
             }
         }
+    }
 
-        playSoloButton.setOnClickListener {
+    override fun resetGame() {
+        //opponentInfo.text = ""
+        resetGameButton.visibility = View.GONE
+        setGameVisibility(false)
+        resetBoard()
+        setTurnVisually(0)
+    }
 
-            startActivity(Intent(this, PlaySoloActivity::class.java))
+    override fun resetBoard() {
+        val drawable: Drawable? = ContextCompat.getDrawable(this, android.R.color.transparent)
+        (0 until count)
+                .filter { gameButtonsContainer.getChildAt(it) is ImageView }
+                .forEach {
+                    gameButtonsContainer.getChildAt(it).isEnabled = true
+                    (gameButtonsContainer.getChildAt(it) as ImageView).setImageDrawable(drawable)
+                }
+    }
 
+
+    fun buttonClick(view: View) {
+        when (view.id) {
+            R.id.resetGameButton -> { presenter.resetGame() }
+            R.id.sendRequestButton -> presenter.sendRequest(sendRequestEmail.text.toString())
+
+            else -> {
+
+            }
         }
+        closeSoftKeyboardAndRequestFocus(view)
+    }
 
-        playOnlineButton.setOnClickListener {
+    fun gameButtonClick(view: View) {
+        presenter.sendMove(getGameButtonId(view))
+        closeSoftKeyboardAndRequestFocus(view)
+    }
 
-            startActivity(Intent(this, PlayOnlineActivity::class.java))
-
+    private fun getGameButtonId(view: View): Int {
+        val id: Int
+        when (view.id) {
+            R.id.gameButton1 -> id = 1
+            R.id.gameButton2 -> id = 2
+            R.id.gameButton3 -> id = 3
+            R.id.gameButton4 -> id = 4
+            R.id.gameButton5 -> id = 5
+            R.id.gameButton6 -> id = 6
+            R.id.gameButton7 -> id = 7
+            R.id.gameButton8 -> id = 8
+            R.id.gameButton9 -> id = 9
+            else -> id = 0
         }
+        return id
+    }
 
-        JoinGameButton.setOnClickListener {
-            startActivity(Intent(this, JoinGameActivity::class.java))
+    private fun manageExtrasAndStartListening() {
+        if (intent.extras != null) {
+            if (intent.extras!!.containsKey(Constants.EMAIL_KEY)) {
+                val email = intent.extras!!.getString(Constants.EMAIL_KEY)
+                //playerInfo.text = email
+                presenter.setEmail(email)
+            }
+        }
+        presenter.startFullListening()
+    }
 
+
+    private fun enableGameButtons(value: Boolean) {
+        (0 until count)
+                .filter { gameButtonsContainer.getChildAt(it) is ImageView }
+                .forEach { gameButtonsContainer.getChildAt(it).isEnabled = value }
+    }
+
+    private fun closeSoftKeyboardAndRequestFocus(view: View) {
+        closeSoftKeyboard(this, view)
+        view.requestFocusFromTouch()
+    }
+
+    private fun setGameVisibility(isPlaying: Boolean) {
+        sendRequestEmail.visibility = if (isPlaying) View.GONE else View.VISIBLE
+        sendRequestButton.visibility = if (isPlaying) View.GONE else View.VISIBLE
+        join_game_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
+        play_online_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
+        play_solo_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
+        gameButtonsContainer.visibility = if (isPlaying) View.VISIBLE else View.INVISIBLE
+    }
+
+    private val notificationReceiver = object : BroadcastReceiver() {
+
+        private val TAG: String = "NotificationReceiver"
+
+        override fun onReceive(context: Context, intent: Intent) {
+            if (presenter.isPlaying() || intent.extras == null || !intent.extras!!.containsKey(Constants.OPPONENT_EMAIL_KEY)) return
+            Log.i(TAG, "Accepted match, opponent's email: " + intent.getStringExtra(Constants.OPPONENT_EMAIL_KEY))
+            val opponentEmail = intent.extras!!.getString(Constants.OPPONENT_EMAIL_KEY)
+            if (opponentEmail != null) {
+                presenter.acceptRequest(opponentEmail)
+            }
+            //opponentInfo.text = opponentEmail
+
+            sendRequestEmail.setText(opponentEmail)
+            setGameVisibility(true)
         }
     }
 
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-    }
+
 }
 
 

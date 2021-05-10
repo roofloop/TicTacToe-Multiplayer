@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tictactoe">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,12 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TicTacToe.TransparentTheme">
-        <activity android:name=".activity.OnlineGameActivity"></activity>
-        <activity android:name=".activity.JoinGameActivity" />
-        <activity android:name=".activity.PlayVsFriendActivity" />
-        <activity android:name=".activity.PlayOnlineActivity" />
-        <activity android:name=".activity.PlaySoloActivity" />
-        <activity android:name=".MainActivity2" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
         <activity android:name=".activity.SignupActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.LogInActivity">

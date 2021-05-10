@@ -10,4 +10,13 @@
     <string name="button_create_account">Continue</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="request_email_hint">Request game to…</string>
+    <string name="action_request">Request</string>
+    <string name="default_notification_channel_id">default</string>
+    <string name="firebase_sign_in_fail">Sign in fail</string>
+    <string name="firebase_sign_up_fail">Sign up fail</string>
+    <string name="firebase_auth_instance_null">Firebase authentication instance must be initialized</string>
+    <string name="action_replay">Play Again?</string>
+
+
 </resources>
