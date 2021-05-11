@@ -54,9 +54,10 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     override fun onStop() {
-        super.onStop()
         presenter.onStop()
         unregisterReceiver(notificationReceiver)
+        super.onStop()
+
     }
 
     override fun getActivity(): Activity {
