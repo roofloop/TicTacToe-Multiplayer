@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import com.example.tictactoe.R
 import com.example.tictactoe.activity.MainActivity
+import com.example.tictactoe.activity.SignupActivity
 import com.example.tictactoe.data.FirebaseClient
 import com.example.tictactoe.manager.NavigationManager
 import com.google.android.material.snackbar.Snackbar
@@ -33,11 +34,14 @@ class LoginPresenter(private val view: LoginView) : LoginPresenterInterface {
 
     override fun signUpButtonClick(view: View) {
         when (view.id) {
-            R.id.textView2 -> {
-                signUpIntoFirebase(view)
+            R.id.create_account_button -> {
+
+                loadSignUpActivity()
+
             }
             else -> return
-        }    }
+        }
+    }
 
     private fun signInIntoFirebase(view: View) {
         Log.i(TAG, "Trying to Sign in into Firebase" + this.view.getEmail())
@@ -57,24 +61,18 @@ class LoginPresenter(private val view: LoginView) : LoginPresenterInterface {
                 }
     }
 
-    private fun signUpIntoFirebase(view: View) {
-        Log.i(TAG, "Trying to Sign up into Firebase")
-        firebaseAuth.createUserWithEmailAndPassword(this.view.getEmail(), this.view.getPassword())
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        loadMainActivity()
-                    } else {
-                        Snackbar.make(view, it.exception?.message ?: view.context.getString(R.string.firebase_sign_up_fail), Snackbar.LENGTH_SHORT).show()
 
-                    }
-                }
-    }
 
     private fun loadMainActivity() {
-        val currentUser = firebaseAuth?.currentUser ?: return
+        val currentUser = firebaseAuth.currentUser ?: return
         NavigationManager()
                 .finishingCurrent()
                 .putExtras(firebaseDatabase.getUserBundle(currentUser))
                 .goTo(view.getActivity(), MainActivity::class.java)
+    }
+
+    private fun loadSignUpActivity() {
+        NavigationManager()
+                .goTo(view.getActivity(), SignupActivity::class.java)
     }
 }

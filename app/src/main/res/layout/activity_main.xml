@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3F95F3"
     tools:context=".activity.MainActivity">
 
 
@@ -21,8 +20,8 @@
             style="@style/Widget.MaterialComponents.Toolbar.Surface"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
-            app:navigationIcon="@drawable/ic_menu_black" />
+            app:title="TicTacToe"
+            app:menu="@menu/top_app_bar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -32,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -43,6 +43,7 @@
             android:layout_width="@dimen/game_button_size"
             android:layout_height="@dimen/game_button_size"
             android:layout_marginEnd="@dimen/game_button_spacing"
+            android:onClick="gameButtonClick"
             android:contentDescription="@string/app_name"
             app:layout_constraintRight_toLeftOf="@+id/gameButton2"
             app:layout_constraintTop_toTopOf="@+id/gameButton2" />
@@ -54,6 +55,7 @@
             android:layout_height="@dimen/game_button_size"
             android:layout_marginBottom="@dimen/game_button_spacing"
             android:contentDescription="@string/app_name"
+            android:onClick="gameButtonClick"
             app:layout_constraintBottom_toTopOf="@+id/gameButton5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -63,8 +65,8 @@
             style="@style/AppTheme.GameButton"
             android:layout_width="@dimen/game_button_size"
             android:layout_height="@dimen/game_button_size"
-            android:layout_marginStart="@dimen/game_button_spacing"
             android:contentDescription="@string/app_name"
+            android:onClick="gameButtonClick"
             app:layout_constraintLeft_toRightOf="@+id/gameButton2"
             app:layout_constraintTop_toTopOf="@+id/gameButton2" />
 
@@ -75,6 +77,7 @@
             android:layout_height="@dimen/game_button_size"
             android:layout_marginEnd="@dimen/game_button_spacing"
             android:contentDescription="@string/app_name"
+            android:onClick="gameButtonClick"
             app:layout_constraintRight_toLeftOf="@+id/gameButton5"
             app:layout_constraintTop_toTopOf="@+id/gameButton5" />
 
@@ -85,6 +88,7 @@
             android:layout_height="@dimen/game_button_size"
             android:layout_marginTop="@dimen/game_button_spacing"
             android:contentDescription="@string/app_name"
+            android:onClick="gameButtonClick"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gameButton2" />
@@ -96,6 +100,7 @@
             android:layout_height="@dimen/game_button_size"
             android:layout_marginStart="@dimen/game_button_spacing"
             android:contentDescription="@string/app_name"
+            android:onClick="gameButtonClick"
             app:layout_constraintLeft_toRightOf="@+id/gameButton5"
             app:layout_constraintTop_toTopOf="@+id/gameButton5" />
 
@@ -106,6 +111,7 @@
             android:layout_height="@dimen/game_button_size"
             android:layout_marginEnd="@dimen/game_button_spacing"
             android:contentDescription="@string/app_name"
+            android:onClick="gameButtonClick"
             app:layout_constraintRight_toLeftOf="@+id/gameButton8"
             app:layout_constraintTop_toTopOf="@+id/gameButton8" />
 
@@ -116,6 +122,7 @@
             android:layout_height="@dimen/game_button_size"
             android:layout_marginTop="@dimen/game_button_spacing"
             android:contentDescription="@string/app_name"
+            android:onClick="gameButtonClick"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gameButton5" />
@@ -126,84 +133,43 @@
             android:layout_width="@dimen/game_button_size"
             android:layout_height="@dimen/game_button_size"
             android:layout_marginStart="@dimen/game_button_spacing"
+            android:onClick="gameButtonClick"
             android:contentDescription="@string/app_name"
             app:layout_constraintLeft_toRightOf="@+id/gameButton8"
             app:layout_constraintTop_toTopOf="@+id/gameButton8" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <EditText
-        android:id="@+id/sendRequestEmail"
-        style="@style/AppTheme.InputText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/request_email_hint"
-        android:inputType="textEmailAddress"
-        app:layout_constraintLeft_toLeftOf="@+id/gameButtonsContainer"
-        app:layout_constraintRight_toRightOf="@+id/gameButtonsContainer"
-        app:layout_constraintTop_toBottomOf="@+id/gameButtonsContainer" />
 
     <Button
-        android:id="@+id/sendRequestButton"
-        style="@style/AppTheme.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="247dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="76dp"
-        android:onClick="buttonClick"
-        android:text="@string/action_request"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendRequestEmail" />
-
-    <Button
-        android:visibility="gone"
-        android:id="@+id/resetGameButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/action_replay"
-        android:onClick="buttonClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/join_game_button"
+        android:id="@+id/play_vs_friend_button"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="188dp"
-        android:text="Join game"
+        android:text="@string/play_vs_friend"
+        android:onClick="buttonClick"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <Button
-        android:id="@+id/play_online_button"
-        android:layout_width="160dp"
+        android:id="@+id/resetGameButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Create game"
         android:onClick="buttonClick"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/join_game_button" />
+        android:text="@string/action_replay"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/play_solo_button"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Play solo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/play_online_button" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation_view"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.PrimarySurface"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
@@ -211,8 +177,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu">
-
-
 
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

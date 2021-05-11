@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.mejdi14:Flat-Dialog-Android:1.0.5@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2146d25c5d6e86833f2ccbee01113ae7/jetified-Flat-Dialog-Android-1.0.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2146d25c5d6e86833f2ccbee01113ae7/jetified-Flat-Dialog-Android-1.0.5/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2146d25c5d6e86833f2ccbee01113ae7/jetified-Flat-Dialog-Android-1.0.5/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.mejdi14/Flat-Dialog-Android/1.0.5/619f230a7bf3ff4731c2f1447dfa4d9da2048e4c/Flat-Dialog-Android-1.0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

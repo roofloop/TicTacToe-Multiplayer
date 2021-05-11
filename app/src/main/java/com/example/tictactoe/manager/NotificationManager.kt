@@ -24,7 +24,6 @@ class NotificationsManager(private val context: Context) {
     fun showNotification(opponentEmail: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            // 2
             val channel = NotificationChannel(
                     "channelId",
                     "TicTacToe",
@@ -32,7 +31,6 @@ class NotificationsManager(private val context: Context) {
             )
             channel.description = "App notification channel."
 
-            // 3
             val notification = buildNotification(opponentEmail)
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
@@ -41,13 +39,11 @@ class NotificationsManager(private val context: Context) {
     }
 
     private fun buildNotification(opponentEmail: String): Notification {
-        val icon = BitmapFactory.decodeResource(context.resources, R.drawable.notification_icon)
         val intent = Intent(Constants.BROADCAST_ACTION_LISTENER)
         intent.putExtra(Constants.OPPONENT_EMAIL_KEY, opponentEmail)
         val pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         val builder = NotificationCompat.Builder(context, "channelId")
                 .setSmallIcon(R.drawable.ic_phone)
-                .setLargeIcon(icon)
                 .setContentTitle(NOTIFICATION_TITLE)
                 .setContentText(opponentEmail)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))

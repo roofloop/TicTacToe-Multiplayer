@@ -19,6 +19,7 @@ import com.example.tictactoe.presenter.main.MainPresenterInterface
 import com.example.tictactoe.presenter.main.MainView
 import com.example.tictactoe.utils.Constants
 import com.example.tictactoe.utils.closeSoftKeyboard
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -31,10 +32,13 @@ class MainActivity : AppCompatActivity(), MainView {
     private val presenter: MainPresenterInterface by lazy { MainPresenter(this) }
     private val count: Int by lazy { gameButtonsContainer.childCount }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         manageExtrasAndStartListening()
+        setDefaultBottomNavigation()
+        handleToppAppBar()
     }
 
     override fun onStart() {
@@ -61,25 +65,17 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     override fun onAcceptedRequest(opponentEmail: String) {
-        //opponentInfo.text = opponentEmail
         setGameVisibility(true)
     }
 
-    override fun onGameListening(opponentEmail: String) {
-        //opponentInfo.text = opponentEmail
-    }
+
 
     override fun onGameFinished() {
         resetGameButton.visibility = View.VISIBLE
         enableGameButtons(false)
-        setTurnVisually(0)
 
     }
 
-    override fun setTurnVisually(player: Int) {
-        //playerInfo.isSelected = player == Constants.FIRST_PLAYER
-        //opponentInfo.isSelected = player == Constants.SECOND_PLAYER
-    }
 
     override fun getGameButton(id: Int): ImageView {
         when (id) {
@@ -99,11 +95,9 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     override fun resetGame() {
-        //opponentInfo.text = ""
         resetGameButton.visibility = View.GONE
         setGameVisibility(false)
         resetBoard()
-        setTurnVisually(0)
     }
 
     override fun resetBoard() {
@@ -116,11 +110,10 @@ class MainActivity : AppCompatActivity(), MainView {
                 }
     }
 
-
     fun buttonClick(view: View) {
         when (view.id) {
             R.id.resetGameButton -> { presenter.resetGame() }
-            R.id.sendRequestButton -> presenter.sendRequest(sendRequestEmail.text.toString())
+            R.id.play_vs_friend_button -> { presenter.openModal() }
 
             else -> {
 
@@ -155,13 +148,11 @@ class MainActivity : AppCompatActivity(), MainView {
         if (intent.extras != null) {
             if (intent.extras!!.containsKey(Constants.EMAIL_KEY)) {
                 val email = intent.extras!!.getString(Constants.EMAIL_KEY)
-                //playerInfo.text = email
                 presenter.setEmail(email)
             }
         }
         presenter.startFullListening()
     }
-
 
     private fun enableGameButtons(value: Boolean) {
         (0 until count)
@@ -175,11 +166,7 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     private fun setGameVisibility(isPlaying: Boolean) {
-        sendRequestEmail.visibility = if (isPlaying) View.GONE else View.VISIBLE
-        sendRequestButton.visibility = if (isPlaying) View.GONE else View.VISIBLE
-        join_game_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
-        play_online_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
-        play_solo_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
+        play_vs_friend_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
         gameButtonsContainer.visibility = if (isPlaying) View.VISIBLE else View.INVISIBLE
     }
 
@@ -194,14 +181,42 @@ class MainActivity : AppCompatActivity(), MainView {
             if (opponentEmail != null) {
                 presenter.acceptRequest(opponentEmail)
             }
-            //opponentInfo.text = opponentEmail
-
-            sendRequestEmail.setText(opponentEmail)
             setGameVisibility(true)
         }
     }
 
+    private fun setDefaultBottomNavigation(){
 
+        val nav = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+
+            when(item.itemId) {
+
+                R.id.home -> {
+                    // Respond to navigation item 1 click
+                    Log.d(TAG, "Home")
+
+                    true
+                }
+                R.id.highscore -> {
+                    // Respond to navigation item 2 click
+                    true
+                }
+                R.id.history -> {
+                    // Respond to navigation item 2 click
+                    true
+                }
+                else -> false
+            }
+        }
+
+        navigation_view.selectedItemId = R.id.home
+        navigation_view.setOnNavigationItemSelectedListener(nav)
+    }
+
+
+    private fun handleToppAppBar(){
+       presenter.handleAppbar()
+    }
 }
 
 

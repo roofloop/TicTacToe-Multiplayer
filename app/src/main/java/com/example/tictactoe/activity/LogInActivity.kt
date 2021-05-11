@@ -55,13 +55,14 @@ class LogInActivity : AppCompatActivity(), LoginView {
         view.requestFocusFromTouch()
     }
 
-    fun registerButtonClick(view: View) {
+    fun signUpButtonClick(view: View) {
         when (view.id) {
-            R.id.textView2 -> presenter.signUpButtonClick(view)
+            R.id.create_account_button -> presenter.signUpButtonClick(view)
             else -> {
             }
         }
         closeSoftKeyboard(this, view)
         view.requestFocusFromTouch()
     }
+
 }

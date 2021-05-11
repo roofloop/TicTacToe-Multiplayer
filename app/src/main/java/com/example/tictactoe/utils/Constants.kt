@@ -17,4 +17,9 @@ object Constants {
     const val CEL_ID__PREFIX: String = "cell_id_"
     const val MOVES_KEY: String = "moves"
     const val BROADCAST_ACTION_LISTENER = "notification.ACTION_LISTENER"
+
+
+    const val RESULT_DRAW = "Draw"
+    const val RESULT_WIN = "Win"
+    const val RESULT_LOST = "Lost"
 }

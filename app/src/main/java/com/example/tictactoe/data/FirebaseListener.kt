@@ -13,13 +13,9 @@ interface FirebaseListener {
     fun onAcceptedRequests(opponentEmail: String)
 
     /**
-     * When a request is accepted.
-     */
-    fun onFoundGame(opponentEmail: String)
-
-    /**
      * When a game event is fired.
      */
+
     fun onGameEvent(moves: HashMap<*, *>)
 
 }

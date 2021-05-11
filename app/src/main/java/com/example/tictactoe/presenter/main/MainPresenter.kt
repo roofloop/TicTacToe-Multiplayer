@@ -1,10 +1,13 @@
 package com.example.tictactoe.presenter.main
 
+import android.graphics.Color
+import android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.example.tictactoe.R
-import com.example.tictactoe.activity.MainActivity
+import com.example.flatdialoglibrary.dialog.FlatDialog
+import com.example.tictactoe.activity.LogInActivity
 import com.example.tictactoe.data.FirebaseClient
 import com.example.tictactoe.data.FirebaseListener
 import com.example.tictactoe.data.PreferencesClient
@@ -14,6 +17,8 @@ import com.example.tictactoe.manager.NotificationsManager
 import com.example.tictactoe.model.Winner
 import com.example.tictactoe.utils.Constants
 import com.example.tictactoe.utils.getUserFromEmailForFirebase
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.HashMap
 
 class MainPresenter(private val view: MainView) : MainPresenterInterface, FirebaseListener {
@@ -25,11 +30,11 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
     private val preferences by lazy { PreferencesClient(view.getActivity()) }
     private val firebaseDatabase by lazy { FirebaseClient(view.getActivity()).setListener(this) }
     private val notificationsManager by lazy { NotificationsManager(view.getActivity()) }
+    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val gameLogic by lazy { GameLogic() }
 
     override fun onResume() {
         if (!isPlaying()) return
-        view.setTurnVisually(if (gameLogic.canPlay(preferences.getPlayerNumber())) Constants.FIRST_PLAYER else Constants.SECOND_PLAYER)
     }
 
     override fun onStop() {
@@ -47,7 +52,6 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
     override fun startFullListening() {
         listenIncomingRequests()
         listenAcceptedRequests()
-        listenGame()
     }
 
     override fun startEventListeners() {
@@ -68,11 +72,6 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         firebaseDatabase.clearAcceptedRequests()
     }
 
-    override fun onFoundGame(opponentEmail: String) {
-        view.onAcceptedRequest(opponentEmail)
-        initGame(Constants.FIRST_PLAYER, opponentEmail)
-2    }
-
     override fun onGameEvent(moves: HashMap<*, *>) {
         gameLogic.clearButtons()
         view.resetBoard()
@@ -90,6 +89,56 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         }
     }
 
+    override fun openModal(){
+
+        val flatDialog = FlatDialog(view.getActivity())
+        flatDialog.setTitle("Invite friend to play Tic-Tac-Toe")
+            .setTitleColor(Color.parseColor("#000000"))
+            .setBackgroundColor(Color.parseColor("#FFFFFF"))
+            .setFirstTextFieldHint("Write email address here...")
+            .setFirstTextFieldInputType(TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+            .setFirstTextFieldHintColor(Color.parseColor("#000000"))
+            .setFirstTextFieldBorderColor(Color.parseColor("#000000"))
+            .setFirstTextFieldTextColor(Color.parseColor("#000000"))
+            .setFirstButtonColor(Color.parseColor("#FF6200EE"))
+            .setSecondButtonColor(Color.parseColor("#FF6200EE"))
+            .setFirstButtonTextColor(Color.parseColor("#FFFFFF"))
+            .setSecondButtonTextColor(Color.parseColor("#FFFFFF"))
+            .setFirstButtonText("Done")
+            .setSecondButtonText("Cancel")
+            .withFirstButtonListner {
+
+                val textInField = flatDialog.firstTextField.toString()
+                sendRequest(textInField)
+                Log.i(TAG, "textInField : $textInField")
+
+                flatDialog.dismiss()
+
+            }
+            .withSecondButtonListner {
+                flatDialog.dismiss()
+            }
+            .show()
+    }
+
+    override fun handleAppbar(){
+
+        view.getActivity().topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+
+                R.id.more -> {
+                    // Handle more item (inside overflow menu) press
+                    Log.e("TAG", "more")
+                    firebaseDatabase.signOut()
+                    loadMainActivity()
+
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     override fun sendRequest(opponentEmail: String) {
 
         Log.i(TAG, "sendRequest function preferences string is: " + preferences.getEmail() )
@@ -99,8 +148,6 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         firebaseDatabase.sendRequest(opponentEmail)
 
     }
-
-
 
     override fun acceptRequest(opponentEmail: String) {
         if (isPlaying() || preferences.getEmail().isNullOrBlank() || preferences.getEmail() == opponentEmail) return
@@ -135,16 +182,6 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         firebaseDatabase.listenAcceptedRequests()
     }
 
-
-
-
-
-    private fun listenGame() {
-        if (!isPlaying()) return
-        view.onGameListening(preferences.getOpponentEmail())
-        listen()
-    }
-
     private fun initGame(player: Int, opponentEmail: String) {
         val sessionId: String
         preferences.setPlayerNumber(player)
@@ -157,7 +194,6 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
                 sessionId = ""
             }
         }
-        view.setTurnVisually(player)
         preferences.setSessionId(sessionId)
         listen()
     }
@@ -189,7 +225,9 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
                 }
             }
             Constants.DRAW -> {
+                firebaseDatabase.incrementDraws()
                 view.onGameFinished()
+
             }
             else -> {
             }
@@ -197,4 +235,9 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
     }
 
 
+    private fun loadMainActivity() {
+        NavigationManager()
+                .finishingCurrent()
+                .goTo(view.getActivity(), LogInActivity::class.java)
+    }
 }

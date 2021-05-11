@@ -1,6 +1,7 @@
 package com.example.tictactoe.presenter.main
 
 import android.app.Activity
+import android.view.View
 import android.widget.ImageView
 
 interface MainView {
@@ -9,15 +10,12 @@ interface MainView {
 
     fun onAcceptedRequest(opponentEmail: String)
 
-    fun onGameListening(opponentEmail: String)
-
     fun onGameFinished()
-
-    fun setTurnVisually(player: Int)
 
     fun getGameButton(id: Int): ImageView
 
     fun resetGame()
 
     fun resetBoard()
+
 }

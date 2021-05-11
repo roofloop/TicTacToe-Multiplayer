@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import com.example.tictactoe.utils.Constants
 import com.example.tictactoe.utils.getUserFromEmailForFirebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.*
-
 
 class FirebaseClient(context: Context) {
 
@@ -18,9 +18,9 @@ class FirebaseClient(context: Context) {
 
     private val preferences by lazy { PreferencesClient(context) }
     private val firebaseDatabase by lazy { FirebaseDatabase.getInstance() }
-    private val gameListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap<DatabaseReference, ValueEventListener>() }
-    private val incomingRequestsListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap<DatabaseReference, ValueEventListener>() }
-    private val acceptedRequestsListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap<DatabaseReference, ValueEventListener>() }
+    private val gameListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap() }
+    private val incomingRequestsListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap() }
+    private val acceptedRequestsListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap() }
     private var firebaseListener: FirebaseListener? = null
 
     fun setListener(firebaseListener: FirebaseListener): FirebaseClient {
@@ -31,12 +31,19 @@ class FirebaseClient(context: Context) {
     /**
      * Creates a bundle to send to another activity from a FirebaseUser.
      */
+
     fun getUserBundle(currentUser: FirebaseUser): Bundle {
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putString(Constants.UID_KEY, currentUser.uid)
         bundle.putString(Constants.EMAIL_KEY, currentUser.email)
         return bundle
     }
+
+     fun signOut() {
+
+         FirebaseAuth.getInstance().signOut()
+
+     }
 
     /**
      * Sends a request to an opponent.
@@ -99,6 +106,7 @@ class FirebaseClient(context: Context) {
     /**
      * Resets the game.
      */
+
     fun resetGame() {
         gameReference().setValue("")
     }
@@ -124,12 +132,13 @@ class FirebaseClient(context: Context) {
             }
         }
         reference.addValueEventListener(listener)
-        incomingRequestsListeners.put(reference, listener)
+        incomingRequestsListeners[reference] = listener
     }
 
     /**
      * Starts listening accepted requests.
      */
+
     fun listenAcceptedRequests() {
         Log.i(TAG, "Initializing the ACCEPT REQUESTS LISTENER")
         removeAcceptedRequestsListeners()
@@ -147,7 +156,7 @@ class FirebaseClient(context: Context) {
             }
         }
         reference.addValueEventListener(listener)
-        acceptedRequestsListeners.put(reference, listener)
+        acceptedRequestsListeners[reference] = listener
     }
 
     /**
@@ -164,8 +173,19 @@ class FirebaseClient(context: Context) {
             firebaseListener?.onGameEvent(it as HashMap<*, *>)
         }
         reference.addValueEventListener(listener)
-        gameListeners.put(reference, listener)
+        gameListeners[reference] = listener
     }
+
+    fun incrementDraws() {
+
+        userReference(Constants.UID_KEY)
+            .child(Constants.RESULT_DRAW)
+            .setValue(ServerValue.increment(1))
+    }
+
+    /**
+    * Remove Listeners
+    */
 
     fun remove() {
         removeIncomingRequestsListeners()
@@ -197,7 +217,6 @@ class FirebaseClient(context: Context) {
     private fun isPlaying(): Boolean {
         return preferences.isPlaying()
     }
-
 
     private fun userReference(userEmail: String?): DatabaseReference {
         return firebaseDatabase.reference
@@ -231,5 +250,7 @@ class FirebaseClient(context: Context) {
         override fun onCancelled(error: DatabaseError) {
             Log.e(TAG, "Error while listening to the database")
         }
+
+
     }
 }

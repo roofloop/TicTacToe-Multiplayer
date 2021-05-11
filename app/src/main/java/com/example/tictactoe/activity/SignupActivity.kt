@@ -1,72 +1,63 @@
 package com.example.tictactoe.activity
 
-import android.content.Intent
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.Toast
+import android.view.View
 import com.example.tictactoe.R
-import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.auth.FirebaseAuth
+import com.example.tictactoe.presenter.login.LoginPresenter
+import com.example.tictactoe.presenter.signup.SignUpPresenter
+import com.example.tictactoe.presenter.signup.SignUpView
+import com.example.tictactoe.utils.closeSoftKeyboard
+import kotlinx.android.synthetic.main.activity_log_in.email_edit_text
+import kotlinx.android.synthetic.main.activity_signup.*
 
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity(), SignUpView {
 
-    // Entry point of the Firebase Authentication SDK.
-    private lateinit var auth: FirebaseAuth
+    companion object {
+        private const val TAG: String = "SignUpActivity"
+    }
+
+    private val presenter: SignUpPresenter by lazy { SignUpPresenter(this) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
-        // Initialize Firebase Auth
-        auth = FirebaseAuth.getInstance()
-
-        // Different user inputs relevant to account creation
-        val editEmail = (findViewById<TextInputEditText>(R.id.email_edit_text))
-        val editPassword = (findViewById<TextInputEditText>(R.id.password_edit_text))
-
-        val confirmButton = findViewById<Button>(R.id.login_button)
-        confirmButton.setOnClickListener { createAccount(editEmail.text.toString(), editPassword.text.toString()) }
 
     }
 
-    private fun createAccount( email: String, password: String) {
-        // [START create_user_with_email]
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success")
+    override fun getActivity(): Activity {
+        return this
+    }
 
+    override fun getEmail(): String {
+        return signup_email_edit_text.text.toString()
+    }
 
-                    Log.i(TAG, "Completed: " + task.isComplete)
+    override fun getPassword(): String {
 
-                    val user = auth.currentUser
-                    // Do something in response to button
-                    val intent = Intent(this, LogInActivity::class.java).apply {
-                    }
-                    startActivity(intent)
-                    finish()
-                } else {
+        return if (password_edit_text1.text.toString() == password_edit_Text2.text.toString()) {
 
-                    // If sign in fails, display a message to the user.
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .addOnFailureListener { e ->
-                            Log.e(
-                                TAG,
-                                "Unable to create user" + e.localizedMessage,
-                                e
-                            )
+            password_edit_text1.text.toString()
 
-                            Toast.makeText(this, e.localizedMessage,
-                                Toast.LENGTH_LONG).show()
-                        }
-                }
+        }else{
+            password_edit_text1.error = "Password wrong"
+            "Password mismatch"
+        }
+
+    }
+
+    fun continueClick(view: View) {
+        when (view.id) {
+            R.id.continue_button -> presenter.signUpIntoFirebase(view)
+            else -> {
             }
+        }
+        closeSoftKeyboard(this, view)
+        view.requestFocusFromTouch()
+    }
 
-    }
-    companion object {
-        private const val TAG = "EmailPassword"
-    }
 }

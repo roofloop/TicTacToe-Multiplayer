@@ -1,5 +1,7 @@
 package com.example.tictactoe.presenter.main
 
+import android.view.View
+
 interface MainPresenterInterface {
 
     fun startFullListening()
@@ -10,7 +12,11 @@ interface MainPresenterInterface {
 
     fun sendRequest(opponentEmail: String)
 
+    fun handleAppbar()
 
+    fun acceptRequest(opponentEmail: String)
+
+    fun openModal()
 
     fun setEmail(email: String?)
 
@@ -20,9 +26,9 @@ interface MainPresenterInterface {
 
     fun resetGame()
 
-
     fun isPlaying(): Boolean
 
-    fun acceptRequest(opponentEmail: String)
+
+
 
 }
