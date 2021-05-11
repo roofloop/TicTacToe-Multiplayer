@@ -25,6 +25,12 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
+    <style name="TextAppearance.TicTacToe.HighScoreText" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="Widget.TicTacToe.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextAppearance">@style/TextAppearance.TicTacToe.TextInputLayout.HintText</item>
         <item name="hintTextColor">@color/textColorPrimary</item>

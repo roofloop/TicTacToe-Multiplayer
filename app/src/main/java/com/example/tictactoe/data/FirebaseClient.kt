@@ -3,6 +3,9 @@ package com.example.tictactoe.data
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.tictactoe.activity.MainActivity
 import com.example.tictactoe.utils.Constants
 import com.example.tictactoe.utils.getUserFromEmailForFirebase
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +24,10 @@ class FirebaseClient(context: Context) {
     private val gameListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap() }
     private val incomingRequestsListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap() }
     private val acceptedRequestsListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap() }
+    private val highScoreListeners: HashMap<DatabaseReference, ValueEventListener> by lazy { HashMap() }
     private var firebaseListener: FirebaseListener? = null
+    private val highScoreLiveData: MutableLiveData<String> = MutableLiveData()
+
 
     fun setListener(firebaseListener: FirebaseListener): FirebaseClient {
         this.firebaseListener = firebaseListener
@@ -39,47 +45,46 @@ class FirebaseClient(context: Context) {
         return bundle
     }
 
-     fun signOut() {
-
-         FirebaseAuth.getInstance().signOut()
-
-     }
+    /**
+     * Sign out current user.
+     */
+    fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+    }
 
     /**
      * Sends a request to an opponent.
-     *
-     * @param opponentEmail the opponent email
      */
 
     fun sendRequest(opponentEmail: String?) {
         if (isPlaying()) return
         userReference(opponentEmail)
-                .child(Constants.INCOMING_REQUEST_FROM_KEY)
-                .push()
-                .setValue(preferences.getEmail())
+            .child(Constants.INCOMING_REQUEST_FROM_KEY)
+            .push()
+            .setValue(preferences.getEmail())
     }
 
     /**
      * Accepts a request from an opponent.
      *
-     * @param opponentEmail the opponent email
      */
 
     fun acceptRequest(opponentEmail: String?) {
         if (isPlaying()) return
         userReference(opponentEmail)
-                .child(Constants.ACCEPTED_REQUEST_FROM_KEY)
-                .child(Constants.EMAIL_KEY)
-                .setValue(preferences.getEmail())
+            .child(Constants.ACCEPTED_REQUEST_FROM_KEY)
+            .child(Constants.EMAIL_KEY)
+            .setValue(preferences.getEmail())
     }
 
     /**
      * Clears the incoming requests.
      */
+
     fun clearIncomingRequests() {
         userReference(preferences.getEmail())
-                .child(Constants.INCOMING_REQUEST_FROM_KEY)
-                .setValue("")
+            .child(Constants.INCOMING_REQUEST_FROM_KEY)
+            .setValue("")
     }
 
     /**
@@ -87,20 +92,19 @@ class FirebaseClient(context: Context) {
      */
     fun clearAcceptedRequests() {
         userReference(preferences.getEmail())
-                .child(Constants.ACCEPTED_REQUEST_FROM_KEY)
-                .setValue("")
+            .child(Constants.ACCEPTED_REQUEST_FROM_KEY)
+            .setValue("")
     }
 
     /**
      * Sends a move.
      *
-     * @param id the id of the game button
      */
     fun sendMove(id: String) {
         gameReference()
-                .child(Constants.MOVES_KEY)
-                .child(id)
-                .setValue(preferences.getEmail())
+            .child(Constants.MOVES_KEY)
+            .child(id)
+            .setValue(preferences.getEmail())
     }
 
     /**
@@ -117,6 +121,7 @@ class FirebaseClient(context: Context) {
 
     fun listenIncomingRequests() {
         Log.i(TAG, "Initializing the INCOMING REQUESTS LISTENER")
+
         removeIncomingRequestsListeners()
         val reference = userReference(preferences.getEmail())
         val listener = Listener()
@@ -159,6 +164,38 @@ class FirebaseClient(context: Context) {
         acceptedRequestsListeners[reference] = listener
     }
 
+    fun incrementDraws() {
+        userReference(getUserFromEmailForFirebase(preferences.getEmail()))
+            .child(Constants.RESULT_DRAW)
+            .setValue(ServerValue.increment(1))
+    }
+
+    fun listenHighScores(): LiveData<String> {
+
+        val reference = userReference(preferences.getEmail()).child(Constants.RESULT_DRAW)
+
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Get Post object and use the values to update the UI
+                val draws = dataSnapshot.value
+                Log.i(TAG, "Draws from database: $draws")
+                preferences.setHighScore(draws.toString())
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "onCancelled", databaseError.toException())
+            }
+        }
+
+        reference.addValueEventListener(postListener)
+        incomingRequestsListeners[reference] = postListener
+        highScoreLiveData.postValue(preferences.getHighScore())
+
+        return highScoreLiveData
+    }
+
     /**
      * Starts listening the game.
      */
@@ -176,13 +213,6 @@ class FirebaseClient(context: Context) {
         gameListeners[reference] = listener
     }
 
-    fun incrementDraws() {
-
-        userReference(Constants.UID_KEY)
-            .child(Constants.RESULT_DRAW)
-            .setValue(ServerValue.increment(1))
-    }
-
     /**
     * Remove Listeners
     */
@@ -191,6 +221,7 @@ class FirebaseClient(context: Context) {
         removeIncomingRequestsListeners()
         removeAcceptedRequestsListeners()
         removeGameListeners()
+        removeHighScoreListeners()
     }
 
     private fun removeIncomingRequestsListeners() {
@@ -214,6 +245,13 @@ class FirebaseClient(context: Context) {
         }
     }
 
+    private fun removeHighScoreListeners() {
+        for ((key, value) in gameListeners) {
+            key.removeEventListener(value)
+            highScoreListeners.remove(key)
+        }
+    }
+
     private fun isPlaying(): Boolean {
         return preferences.isPlaying()
     }
@@ -233,7 +271,6 @@ class FirebaseClient(context: Context) {
     private class Listener : ValueEventListener {
 
         private var func: (Any) -> Unit = {}
-
         fun callback(func: (Any) -> Unit) {
             this.func = func
         }
@@ -250,7 +287,5 @@ class FirebaseClient(context: Context) {
         override fun onCancelled(error: DatabaseError) {
             Log.e(TAG, "Error while listening to the database")
         }
-
-
     }
 }

@@ -1,6 +1,7 @@
 package com.example.tictactoe.presenter.main
 
 import android.view.View
+import androidx.lifecycle.LiveData
 
 interface MainPresenterInterface {
 
@@ -13,6 +14,8 @@ interface MainPresenterInterface {
     fun sendRequest(opponentEmail: String)
 
     fun handleAppbar()
+
+    fun getHighScore(): LiveData<String>
 
     fun acceptRequest(opponentEmail: String)
 

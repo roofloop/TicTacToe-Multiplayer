@@ -5,6 +5,7 @@ import android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import com.example.tictactoe.R
 import com.example.flatdialoglibrary.dialog.FlatDialog
 import com.example.tictactoe.activity.LogInActivity
@@ -17,7 +18,6 @@ import com.example.tictactoe.manager.NotificationsManager
 import com.example.tictactoe.model.Winner
 import com.example.tictactoe.utils.Constants
 import com.example.tictactoe.utils.getUserFromEmailForFirebase
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.HashMap
 
@@ -30,7 +30,6 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
     private val preferences by lazy { PreferencesClient(view.getActivity()) }
     private val firebaseDatabase by lazy { FirebaseClient(view.getActivity()).setListener(this) }
     private val notificationsManager by lazy { NotificationsManager(view.getActivity()) }
-    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val gameLogic by lazy { GameLogic() }
 
     override fun onResume() {
@@ -89,6 +88,10 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         }
     }
 
+    override fun getHighScore(): LiveData<String> {
+        return firebaseDatabase.listenHighScores()
+    }
+
     override fun openModal(){
 
         val flatDialog = FlatDialog(view.getActivity())
@@ -130,7 +133,7 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
                     // Handle more item (inside overflow menu) press
                     Log.e("TAG", "more")
                     firebaseDatabase.signOut()
-                    loadMainActivity()
+                    loadLogInActivity()
 
                     true
                 }
@@ -138,6 +141,7 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
             }
         }
     }
+
 
     override fun sendRequest(opponentEmail: String) {
 
@@ -182,6 +186,9 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         firebaseDatabase.listenAcceptedRequests()
     }
 
+
+
+
     private fun initGame(player: Int, opponentEmail: String) {
         val sessionId: String
         preferences.setPlayerNumber(player)
@@ -210,8 +217,9 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         gameButton.isEnabled = false
         gameButton.setImageDrawable(ContextCompat.getDrawable(view.getActivity(), drawable))
         onResume()
-        val winner: Winner? = gameLogic.checkWinner() ?: return
-        when (winner?.player) {
+        val winner: Winner = gameLogic.checkWinner() ?: return
+
+        when (winner.player) {
             Constants.FIRST_PLAYER -> {
                 view.onGameFinished()
                 winner.winnerValues.forEach { it ->
@@ -234,10 +242,10 @@ class MainPresenter(private val view: MainView) : MainPresenterInterface, Fireba
         }
     }
 
-
-    private fun loadMainActivity() {
+    private fun loadLogInActivity() {
         NavigationManager()
                 .finishingCurrent()
                 .goTo(view.getActivity(), LogInActivity::class.java)
     }
+
 }

@@ -20,6 +20,6 @@ object Constants {
 
 
     const val RESULT_DRAW = "Draw"
-    const val RESULT_WIN = "Win"
+    const val HIGHSCORE = "Win"
     const val RESULT_LOST = "Lost"
 }

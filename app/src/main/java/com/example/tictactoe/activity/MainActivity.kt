@@ -13,7 +13,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.example.tictactoe.R
-import com.example.tictactoe.manager.NavigationManager
 import com.example.tictactoe.presenter.main.MainPresenter
 import com.example.tictactoe.presenter.main.MainPresenterInterface
 import com.example.tictactoe.presenter.main.MainView
@@ -68,14 +67,11 @@ class MainActivity : AppCompatActivity(), MainView {
         setGameVisibility(true)
     }
 
-
-
     override fun onGameFinished() {
         resetGameButton.visibility = View.VISIBLE
         enableGameButtons(false)
 
     }
-
 
     override fun getGameButton(id: Int): ImageView {
         when (id) {
@@ -168,6 +164,21 @@ class MainActivity : AppCompatActivity(), MainView {
     private fun setGameVisibility(isPlaying: Boolean) {
         play_vs_friend_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
         gameButtonsContainer.visibility = if (isPlaying) View.VISIBLE else View.INVISIBLE
+        highScoreContainer.visibility = View.GONE
+    }
+
+    private fun highScoreScreen(isHighScoreSelected: Boolean){
+
+        // Get highscore value from firebase database and show it on screen.
+
+        presenter.getHighScore().observe(this, {draws ->
+
+            val drawsAmount = draws.plus(" Draws")
+            play_vs_friend_button.visibility = if (isHighScoreSelected) View.GONE else View.VISIBLE
+            highScoreContainer.visibility = if (isHighScoreSelected) View.VISIBLE else View.GONE
+            highscore_draws.text = drawsAmount
+
+        })
     }
 
     private val notificationReceiver = object : BroadcastReceiver() {
@@ -194,11 +205,14 @@ class MainActivity : AppCompatActivity(), MainView {
                 R.id.home -> {
                     // Respond to navigation item 1 click
                     Log.d(TAG, "Home")
+                    highScoreScreen(false)
 
                     true
                 }
                 R.id.highscore -> {
                     // Respond to navigation item 2 click
+                    highScoreScreen(true)
+
                     true
                 }
                 R.id.history -> {
@@ -212,7 +226,6 @@ class MainActivity : AppCompatActivity(), MainView {
         navigation_view.selectedItemId = R.id.home
         navigation_view.setOnNavigationItemSelectedListener(nav)
     }
-
 
     private fun handleToppAppBar(){
        presenter.handleAppbar()

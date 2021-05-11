@@ -16,8 +16,17 @@ class PreferencesClient(context: Context) {
         setBoolean(Constants.PLAYING_KEY, value)
     }
 
+
     fun isPlaying(): Boolean {
         return getBoolean(Constants.PLAYING_KEY, false)
+    }
+
+    fun setHighScore(value: String) {
+        setString(Constants.HIGHSCORE, value)
+    }
+
+    fun getHighScore(): String {
+        return getString(Constants.HIGHSCORE, "")
     }
 
 

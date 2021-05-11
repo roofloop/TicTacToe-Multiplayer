@@ -17,6 +17,10 @@
         <item name="android:onClick">gameButtonClick</item>
     </style>
 
+    <style name="AppTheme.HighScore">
+        <item name="android:background">@drawable/ic_highscore</item>
+    </style>
+
     <style name="AppTheme.InputText">
         <item name="android:textSize">13sp</item>
         <item name="android:maxLines">1</item>
