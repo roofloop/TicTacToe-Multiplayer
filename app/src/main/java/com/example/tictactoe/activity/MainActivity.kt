@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity(), MainView {
         when (view.id) {
             R.id.resetGameButton -> { presenter.resetGame() }
             R.id.play_vs_friend_button -> { presenter.openModal() }
+            R.id.play_solo_button -> {startActivity(Intent(this, PlaySoloActivity::class.java))}
 
             else -> {
 

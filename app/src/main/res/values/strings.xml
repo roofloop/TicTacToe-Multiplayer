@@ -22,6 +22,7 @@
     <string name="draws">Draws</string>
     <string name="wins">Wins</string>
     <string name="lost">Lost</string>
+    <string name="play_solo">PLAY SOLO</string>
 
 
 </resources>

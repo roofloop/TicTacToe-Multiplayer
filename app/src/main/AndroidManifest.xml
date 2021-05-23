@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TicTacToe.TransparentTheme">
-        <activity android:name=".activity.HighScoreActivity"></activity>
+        <activity android:name=".activity.PlaySoloActivity"></activity>
+        <activity android:name=".activity.HighScoreActivity" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
