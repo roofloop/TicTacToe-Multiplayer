@@ -117,12 +117,10 @@ class MainActivity : AppCompatActivity(), MainView {
 
             }
         }
-        closeSoftKeyboardAndRequestFocus(view)
     }
 
     fun gameButtonClick(view: View) {
         presenter.sendMove(getGameButtonId(view))
-        closeSoftKeyboardAndRequestFocus(view)
     }
 
     private fun getGameButtonId(view: View): Int {
@@ -158,13 +156,11 @@ class MainActivity : AppCompatActivity(), MainView {
                 .forEach { gameButtonsContainer.getChildAt(it).isEnabled = value }
     }
 
-    private fun closeSoftKeyboardAndRequestFocus(view: View) {
-        closeSoftKeyboard(this, view)
-        view.requestFocusFromTouch()
-    }
+
 
     private fun setGameVisibility(isPlaying: Boolean) {
         play_vs_friend_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
+        play_solo_button.visibility = if (isPlaying) View.GONE else View.VISIBLE
         gameButtonsContainer.visibility = if (isPlaying) View.VISIBLE else View.INVISIBLE
         highScoreContainer.visibility = View.GONE
     }

@@ -190,7 +190,7 @@ class FirebaseClient(context: Context) {
         }
 
         reference.addValueEventListener(postListener)
-        incomingRequestsListeners[reference] = postListener
+        highScoreListeners[reference] = postListener
         highScoreLiveData.postValue(preferences.getHighScore())
 
         return highScoreLiveData

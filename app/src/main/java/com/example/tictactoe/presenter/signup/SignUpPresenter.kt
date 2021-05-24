@@ -12,7 +12,7 @@ import com.example.tictactoe.presenter.login.LoginView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
-class SignUpPresenter(private val view: SignUpView) : SignUpPresenterInterface {
+class SignUpPresenter(private val view: SignUpView) {
 
     companion object {
         private const val TAG: String = "SignUpPresenter"

@@ -17,8 +17,6 @@ class GameLogic {
 
     /**
      * Returns if the player can play depending on the player number and the number of moves.
-     *
-     * @return true or false
      */
     fun canPlay(player: Int): Boolean {
         when (player) {
@@ -47,8 +45,6 @@ class GameLogic {
 
     /**
      * Manages the moves. It returns the drawable to be displayed for the move depending on the current player.
-     *
-     * @return the drawable to display for the move
      */
     fun play(buttonId: Int): Int {
         when (currentPlayer) {
@@ -70,8 +66,6 @@ class GameLogic {
      * Checks all the win conditions. Possible returns are Player1, Player2, Draw or null if none of these.
      * If it's not a null return, it will return a Winner object with the winner and the condition the made
      * him win.
-     *
-     * @return Winner object
      */
     fun checkWinner(): Winner? {
         val player: Int
