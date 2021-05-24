@@ -174,11 +174,21 @@ class MainActivity : AppCompatActivity(), MainView {
         // Get highscore value from firebase database and show it on screen.
 
         presenter.getHighScore().observe(this, {draws ->
+            var drawsAmount: String
+            Log.i(TAG, "Draws: $draws")
 
-            val drawsAmount = draws.plus(" Draws")
-            play_vs_friend_button.visibility = if (isHighScoreSelected) View.GONE else View.VISIBLE
-            highScoreContainer.visibility = if (isHighScoreSelected) View.VISIBLE else View.GONE
-            highscore_draws.text = drawsAmount
+
+            if(draws == "null"){
+                drawsAmount = "0 Draws"
+                highscore_draws.text = drawsAmount
+                Log.i(TAG, "Drawsamount: $drawsAmount")
+
+            }else{drawsAmount = draws.plus(" Draws")}
+
+                play_vs_friend_button.visibility = if (isHighScoreSelected) View.GONE else View.VISIBLE
+                play_solo_button.visibility = if (isHighScoreSelected) View.GONE else View.VISIBLE
+                highScoreContainer.visibility = if (isHighScoreSelected) View.VISIBLE else View.GONE
+                highscore_draws.text = drawsAmount
 
         })
     }

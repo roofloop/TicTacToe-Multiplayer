@@ -23,6 +23,7 @@
     <string name="wins">Wins</string>
     <string name="lost">Lost</string>
     <string name="play_solo">PLAY SOLO</string>
+    <string name="action_exit">Exit</string>
 
 
 </resources>

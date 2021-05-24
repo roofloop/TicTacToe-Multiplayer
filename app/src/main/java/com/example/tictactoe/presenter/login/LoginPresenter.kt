@@ -1,6 +1,7 @@
 package com.example.tictactoe.presenter.login
 
 import android.util.Log
+import android.util.Log.d
 import android.view.View
 import com.example.tictactoe.R
 import com.example.tictactoe.activity.MainActivity
@@ -9,6 +10,7 @@ import com.example.tictactoe.data.FirebaseClient
 import com.example.tictactoe.manager.NavigationManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import java.lang.Exception
 
 class LoginPresenter(private val view: LoginView) : LoginPresenterInterface {
 
@@ -46,19 +48,21 @@ class LoginPresenter(private val view: LoginView) : LoginPresenterInterface {
     private fun signInIntoFirebase(view: View) {
         Log.i(TAG, "Trying to Sign in into Firebase" + this.view.getEmail())
 
+        try {
+            firebaseAuth.signInWithEmailAndPassword(this.view.getEmail(), this.view.getPassword())
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            loadMainActivity()
+                        } else {
 
-        firebaseAuth.signInWithEmailAndPassword(this.view.getEmail(), this.view.getPassword())
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        loadMainActivity()
-                    } else {
-
-                        if (it.exception != null) {
-                            Snackbar.make(view, it.exception?.message ?: view.context.getString(R.string.firebase_sign_in_fail), Snackbar.LENGTH_SHORT).show()
-                            Log.e(TAG, it.exception?.message, it.exception)
+                            if (it.exception != null) {
+                                Snackbar.make(view, it.exception?.message ?: view.context.getString(R.string.firebase_sign_in_fail), Snackbar.LENGTH_SHORT).show()
+                                Log.e(TAG, it.exception?.message, it.exception)
+                            }
                         }
                     }
-                }
+        }catch(e: Exception){Log.d(TAG, "Error signing in")}
+
     }
 
 

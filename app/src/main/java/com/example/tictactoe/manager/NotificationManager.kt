@@ -43,6 +43,7 @@ class NotificationsManager(private val context: Context) {
         intent.putExtra(Constants.OPPONENT_EMAIL_KEY, opponentEmail)
         val pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         val builder = NotificationCompat.Builder(context, "channelId")
+                .setSmallIcon(R.drawable.ic_phone)
                 .setContentTitle(NOTIFICATION_TITLE)
                 .setContentText(opponentEmail)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))

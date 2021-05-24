@@ -36,7 +36,6 @@ class LogInActivity : AppCompatActivity(), LoginView {
     }
 
     override fun getEmail(): String {
-        Log.e(TAG, "loginEmail.toString(): ${email_edit_text.text.toString()}")
 
         return email_edit_text.text.toString()
     }
